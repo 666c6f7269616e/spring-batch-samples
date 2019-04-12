@@ -1,18 +1,16 @@
-package com.labs.springbatchsamples.job;
+package com.labs.springbatchsamples.job.sequentialflow;
 
+import com.labs.springbatchsamples.job.SimpleJobEnum;
+import com.labs.springbatchsamples.job.StepEnum;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Random;
-
-@Configuration
+@Configuration("sequentialFlowConfiguration")
 public class JobConfiguration {
 
 	private final JobBuilderFactory jobBuilderFactory;
@@ -23,28 +21,9 @@ public class JobConfiguration {
 		this.stepBuilderFactory = stepBuilderFactory;
 	}
 
-	/********************************************HELLO JOB*************************************************************/
-
-	@Bean
-	public Job helloJob() {
-		return jobBuilderFactory.get(JobEnum.HELLO_WORLD.getJobName())
-				.start(helloStep())
-				.build();
-	}
-
-	public Step helloStep() {
-		return stepBuilderFactory.get(StepEnum.HELLO_WORLD.getStepName())
-				.tasklet((contribution, chunkContext) -> {
-					System.out.println("Hello World!");
-					return RepeatStatus.FINISHED;
-				}).build();
-	}
-
-	/********************************************SEQUENTIAL FLOW*******************************************************/
-
 	@Bean
 	public Job sequentialFlow() {
-		return this.jobBuilderFactory.get(JobEnum.SEQUENTIAL_FLOW.getJobName())
+		return this.jobBuilderFactory.get(SimpleJobEnum.SEQUENTIAL_FLOW.getJobName())
 				.start(sequentialFlow1())
 				.next(sequentialFlow2())
 				.next(sequentialFlow3())

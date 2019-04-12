@@ -6,7 +6,12 @@ public enum StepEnum {
 	HELLO_WORLD("helloStep"),
 	SEQUENTIAL_FLOW_1("sequentialFlow1"),
 	SEQUENTIAL_FLOW_2("sequentialFlow2"),
-	SEQUENTIAL_FLOW_3("sequentialFlow3");
+	SEQUENTIAL_FLOW_3("sequentialFlow3"),
+	DECISION_FLOW_START("decisionFlowStart"),
+	DECISION_FLOW_SUCCESS("decisionFlowSuccess"),
+	DECISION_FLOW_FAIL("decisionFlowFail"),
+	DECISION_FLOW_CONTINUE("decisionFlowContinue"),
+	DECISION_FLOW_END("decisionFlowEnd");
 
 	private String stepName;
 
@@ -22,6 +27,6 @@ public enum StepEnum {
 		return Arrays.stream(values()).
 				filter(step -> step.getStepName().equals(stepName))
 				.findFirst()
-				.get();
+				.orElseThrow(() -> new RuntimeException("No step for this name"));
 	}
 }
