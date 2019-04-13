@@ -5,7 +5,8 @@ import java.util.Arrays;
 public enum SimpleJobEnum implements JobEnum{
 
     HELLO_WORLD("helloJob"),
-    SEQUENTIAL_FLOW("sequentialFlow");
+    SEQUENTIAL_FLOW("sequentialFlow"),
+    ASYNC_JOB("asyncJob");
 
 
     private String jobName;

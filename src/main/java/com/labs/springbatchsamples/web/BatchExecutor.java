@@ -17,6 +17,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,14 +36,16 @@ public class BatchExecutor {
 
     private final JobLauncher launcher;
 
-    public BatchExecutor(JobLauncher launcher) {
+    public BatchExecutor(@Qualifier("jobLauncherAssync") JobLauncher launcher) {
         this.launcher = launcher;
     }
 
     @GetMapping(value = "/{jobName}")
     public ResponseEntity<?> executarJob(@PathVariable("jobName") SimpleJobEnum jobName) {
 
-        JobParameters jobParameters = new JobParametersBuilder().toJobParameters();
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addDate("date", new Date())
+                .toJobParameters();
 
         return runJob(jobName, jobParameters);
     }
@@ -66,6 +69,7 @@ public class BatchExecutor {
                     "LAUNCHING JOB: " + jobName.getJobName() +
                     "\n==============================\n");
             JobExecution jobExecution = launcher.run(job, jobParameters);
+            LOG.info("Launched...");
             return ResponseEntity.ok("JobExecutionId: " + jobExecution.getId() +
                     " JobParameters: " + jobParameters.toString());
 

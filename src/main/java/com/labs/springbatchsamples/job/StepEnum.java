@@ -11,7 +11,8 @@ public enum StepEnum {
 	DECISION_FLOW_SUCCESS("decisionFlowSuccess"),
 	DECISION_FLOW_FAIL("decisionFlowFail"),
 	DECISION_FLOW_CONTINUE("decisionFlowContinue"),
-	DECISION_FLOW_END("decisionFlowEnd");
+	DECISION_FLOW_END("decisionFlowEnd"),
+	ASYNC_FLOW("asyncFLow");
 
 	private String stepName;
 
