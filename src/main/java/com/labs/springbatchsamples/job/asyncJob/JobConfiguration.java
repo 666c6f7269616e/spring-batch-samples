@@ -1,6 +1,6 @@
 package com.labs.springbatchsamples.job.asyncJob;
 
-import com.labs.springbatchsamples.job.SimpleJobEnum;
+import com.labs.springbatchsamples.job.JobEnum;
 import com.labs.springbatchsamples.job.StepEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +28,16 @@ public class JobConfiguration {
 
     @Bean
     public Job asyncJob() {
-        return jobBuilderFactory.get(SimpleJobEnum.ASYNC_JOB.getJobName())
+        return jobBuilderFactory.get(JobEnum.ASYNC_JOB.getJobName())
                 .start(asyncStep())
                 .build();
     }
 
     private Step asyncStep() {
-        return stepBuilderFactory.get(StepEnum.ASYNC_FLOW.getStepName())
+        return stepBuilderFactory.get(StepEnum.ASYNC_STEP.getStepName())
                 .tasklet((contribution, chunkContext) -> {
                     LOG.info("Start waiting " + LocalDateTime.now().toString());
-                    Thread.sleep(3000);
+                    Thread.sleep(10000);
                     LOG.info("Stop waiting " + LocalDateTime.now().toString());
                     return RepeatStatus.FINISHED;
                 }).build();

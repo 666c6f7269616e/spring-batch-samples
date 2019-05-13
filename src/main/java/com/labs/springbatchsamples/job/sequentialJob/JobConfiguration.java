@@ -1,8 +1,9 @@
-package com.labs.springbatchsamples.job.sequentialflow;
+package com.labs.springbatchsamples.job.sequentialJob;
 
-import com.labs.springbatchsamples.job.SimpleJobEnum;
+import com.labs.springbatchsamples.job.JobEnum;
 import com.labs.springbatchsamples.job.StepEnum;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -10,7 +11,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration("sequentialFlowConfiguration")
+@Configuration("sequentialJobConfiguration")
 public class JobConfiguration {
 
 	private final JobBuilderFactory jobBuilderFactory;
@@ -22,34 +23,35 @@ public class JobConfiguration {
 	}
 
 	@Bean
-	public Job sequentialFlow() {
-		return this.jobBuilderFactory.get(SimpleJobEnum.SEQUENTIAL_FLOW.getJobName())
-				.start(sequentialFlow1())
-				.next(sequentialFlow2())
-				.next(sequentialFlow3())
+	public Job sequentialJob(JobExecutionListener listener) {
+		return this.jobBuilderFactory.get(JobEnum.SEQUENTIAL_FLOW.getJobName())
+				.start(sequentialJob1())
+				.next(sequentialJob2())
+				.next(sequentialJob3())
+				.listener(listener)
 				.build();
 	}
 
-	private Step sequentialFlow3() {
-		return stepBuilderFactory.get(StepEnum.SEQUENTIAL_FLOW_3.getStepName())
+	private Step sequentialJob3() {
+		return stepBuilderFactory.get(StepEnum.SEQUENTIAL_STEP_3.getStepName())
 				.tasklet((contribution, chunkContext) -> {
-					System.out.println("sequentialFlow3");
+					System.out.println("sequentialStep3");
 					return RepeatStatus.FINISHED;
 				}).build();
 	}
 
-	private Step sequentialFlow2() {
-		return stepBuilderFactory.get(StepEnum.SEQUENTIAL_FLOW_2.getStepName())
+	private Step sequentialJob2() {
+		return stepBuilderFactory.get(StepEnum.SEQUENTIAL_STEP_2.getStepName())
 				.tasklet((contribution, chunkContext) -> {
-					System.out.println("sequentialFlow2");
+					System.out.println("sequentialStep2");
 					return RepeatStatus.FINISHED;
 				}).build();
 	}
 
-	private Step sequentialFlow1() {
-		return stepBuilderFactory.get(StepEnum.SEQUENTIAL_FLOW_1.getStepName())
+	private Step sequentialJob1() {
+		return stepBuilderFactory.get(StepEnum.SEQUENTIAL_STEP_1.getStepName())
 				.tasklet((contribution, chunkContext) -> {
-					System.out.println("sequentialFlow1");
+					System.out.println("sequentialStep1");
 					return RepeatStatus.FINISHED;
 				}).build();
 

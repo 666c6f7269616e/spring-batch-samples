@@ -1,8 +1,9 @@
-package com.labs.springbatchsamples.job.helloworld;
+package com.labs.springbatchsamples.job.helloworldJob;
 
-import com.labs.springbatchsamples.job.SimpleJobEnum;
+import com.labs.springbatchsamples.job.JobEnum;
 import com.labs.springbatchsamples.job.StepEnum;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -22,14 +23,15 @@ public class JobConfiguration {
 	}
 
 	@Bean
-	public Job helloJob() {
-		return jobBuilderFactory.get(SimpleJobEnum.HELLO_WORLD.getJobName())
+	public Job helloJob(JobExecutionListener jobListener) {
+		return jobBuilderFactory.get(JobEnum.HELLO_WORLD.getJobName())
 				.start(helloStep())
+				.listener(jobListener)
 				.build();
 	}
 
 	private Step helloStep() {
-		return stepBuilderFactory.get(StepEnum.HELLO_WORLD.getStepName())
+		return stepBuilderFactory.get(StepEnum.HELLO_WORLD_STEP.getStepName())
 				.tasklet((contribution, chunkContext) -> {
 					System.out.println("Hello World!");
 					return RepeatStatus.FINISHED;
