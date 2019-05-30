@@ -10,7 +10,9 @@ public enum StepEnum {
 	ASYNC_STEP("asyncStep"),
 	DECISION_STEP_ODD("decisionStepOdd"),
 	DECISION_STEP_EVEN("decisionStepEven"),
-	LOOP_DECISION_STEP("loopDecisionStep");
+	LOOP_DECISION_PREPARE_STEP("loopDecisionPrepareStep"),
+	LOOP_DECISION_PRINT_STEP("loopDecisionPrintStep"),
+	LOOP_DECISION_REMOVE_STEP("loopDecisionRemoveStep");
 
 	private String stepName;
 

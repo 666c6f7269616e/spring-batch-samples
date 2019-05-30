@@ -30,59 +30,74 @@ public class JobConfiguration {
         this.stepBuilderFactory = stepBuilderFactory;
     }
 
-    @Bean
-    public Flow loopDecisionFlow(@Qualifier("loopDecider") JobExecutionDecider decider) {
+    /* ------------------------------ JOB ------------------------------  */
 
-        FlowBuilder<Flow> decisionFlow = new FlowBuilder<>("loopDecisionFlow");
-
-        decisionFlow.start(printResource())
-                .next(decider)
-                .on("CONTINUE")
-                .to(printResource())
-                .next(printResource())
-                .on("COMPLETED")
-                .end()
-                .build();
-
-        return decisionFlow.build();
-    }
 
     @Bean
-    public Job loopDecisionJob(JobExecutionListener jobListener, Flow decisionFlow) {
+    public Job loopDecisionJob(JobExecutionListener jobListener, @Qualifier("loopDeciderFlow") Flow decisionFlow) {
         return jobBuilderFactory.get(JobEnum.LOOP_DECISION_JOB.getJobName())
                 .start(decisionFlow)
                 .build()
                 .build();
     }
 
+    /* ------------------------------ FLOW ------------------------------  */
 
-    @Bean
-    public Step prepareResource() {
-        return stepBuilderFactory.get(StepEnum.LOOP_DECISION_STEP.getStepName())
+    @Bean("loopDeciderFlow")
+    public Flow loopDecisionFlow(@Qualifier("loopDecider") JobExecutionDecider loopDecider,
+                                 @Qualifier("removeResource") Step removeResource) {
+
+        FlowBuilder<Flow> decisionFlow = new FlowBuilder<>("loopDecisionFlow");
+
+        decisionFlow.start(prepareResource())
+                .next(printResource())
+                .next(loopDecider)
+                    .on("CONTINUE")
+                    .to(removeResource())
+                    .next(printResource())
+                .from(loopDecider)
+                    .on("COMPLETED")
+                    .end()
+                .build();
+
+        return decisionFlow.build();
+    }
+
+    /* ------------------------------ STEP ------------------------------  */
+
+    @Bean("removeResource")
+    public Step removeResource() {
+        return stepBuilderFactory.get(StepEnum.LOOP_DECISION_REMOVE_STEP.getStepName())
                 .tasklet((contribution, chunkContext) -> {
                     parameter = parameter.substring(1);
                     return RepeatStatus.FINISHED;
                 }).build();
     }
 
-
     @Bean
     public Step printResource() {
-        return stepBuilderFactory.get(StepEnum.LOOP_DECISION_STEP.getStepName())
+        return stepBuilderFactory.get(StepEnum.LOOP_DECISION_PRINT_STEP.getStepName())
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println(parameter);
                     return RepeatStatus.FINISHED;
                 }).build();
     }
 
+    @Bean
+    public Step prepareResource() {
+        return stepBuilderFactory.get(StepEnum.LOOP_DECISION_PREPARE_STEP.getStepName())
+                .tasklet((contribution, chunkContext) -> {
+                    parameter = (String) chunkContext.getStepContext().getJobParameters().getOrDefault("param", "");
+                    return RepeatStatus.FINISHED;
+                }).build();
+    }
+
+    /* ------------------------------ DECIDER ------------------------------  */
+
     @Bean("loopDecider")
-    public JobExecutionDecider decider() {
+    public JobExecutionDecider loopDecider() {
 
         return (jobExecution, stepExecution) -> {
-
-            if (parameter == null) {
-                parameter = jobExecution.getJobParameters().getString("param", "");
-            }
 
             if (parameter.length() == 0){
                 return new FlowExecutionStatus("COMPLETED");
