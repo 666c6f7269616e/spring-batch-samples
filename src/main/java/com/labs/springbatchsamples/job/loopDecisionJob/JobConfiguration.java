@@ -1,7 +1,6 @@
 package com.labs.springbatchsamples.job.loopDecisionJob;
 
 import com.labs.springbatchsamples.job.JobEnum;
-import com.labs.springbatchsamples.job.StepEnum;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -38,6 +37,7 @@ public class JobConfiguration {
         return jobBuilderFactory.get(JobEnum.LOOP_DECISION_JOB.getJobName())
                 .start(decisionFlow)
                 .build()
+                .listener(jobListener)
                 .build();
     }
 
@@ -57,8 +57,8 @@ public class JobConfiguration {
                     .next(printResource())
                 .from(loopDecider)
                     .on("COMPLETED")
-                    .end()
-                .build();
+                    .end();
+//                .build();
 
         return decisionFlow.build();
     }
@@ -67,7 +67,7 @@ public class JobConfiguration {
 
     @Bean("removeResource")
     public Step removeResource() {
-        return stepBuilderFactory.get(StepEnum.LOOP_DECISION_REMOVE_STEP.getStepName())
+        return stepBuilderFactory.get("LOOP_DECISION_REMOVE_STEP")
                 .tasklet((contribution, chunkContext) -> {
                     parameter = parameter.substring(1);
                     return RepeatStatus.FINISHED;
@@ -76,7 +76,7 @@ public class JobConfiguration {
 
     @Bean
     public Step printResource() {
-        return stepBuilderFactory.get(StepEnum.LOOP_DECISION_PRINT_STEP.getStepName())
+        return stepBuilderFactory.get("LOOP_DECISION_PRINT_STEP")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println(parameter);
                     return RepeatStatus.FINISHED;
@@ -85,7 +85,7 @@ public class JobConfiguration {
 
     @Bean
     public Step prepareResource() {
-        return stepBuilderFactory.get(StepEnum.LOOP_DECISION_PREPARE_STEP.getStepName())
+        return stepBuilderFactory.get("LOOP_DECISION_PREPARE_STEP")
                 .tasklet((contribution, chunkContext) -> {
                     parameter = (String) chunkContext.getStepContext().getJobParameters().getOrDefault("param", "");
                     return RepeatStatus.FINISHED;

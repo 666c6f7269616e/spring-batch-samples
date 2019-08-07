@@ -1,6 +1,5 @@
 package com.labs.springbatchsamples.job;
 
-import com.labs.springbatchsamples.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
@@ -13,6 +12,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -25,13 +25,16 @@ public class JobRunner {
 	private final JobOperator jobOperator;
 	private final JobExplorer jobExplorer;
 	private final JobLauncher jobLauncher;
+	private final ApplicationContext applicationContext;
 
 	public JobRunner(@Qualifier("simpleJobOperator") JobOperator jobOperator,
-                     @Qualifier("asyncLauncher") JobLauncher jobLauncher,
-                     JobExplorer jobExplorer) {
+					 @Qualifier("asyncLauncher") JobLauncher jobLauncher,
+					 JobExplorer jobExplorer,
+					 ApplicationContext applicationContext) {
 		this.jobOperator = jobOperator;
 		this.jobExplorer = jobExplorer;
 		this.jobLauncher = jobLauncher;
+		this.applicationContext = applicationContext;
 	}
 
 	public JobExecution run(JobEnum jobName, JobParameters jobParameters, Long jobId) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
@@ -43,7 +46,7 @@ public class JobRunner {
 				.addDate("timestamp", new Date())
 				.toJobParameters();
 
-		Job job = SpringContextUtil.getBean(jobName.getJobName(), Job.class);
+		Job job = applicationContext.getBean(jobName.getJobName(), Job.class);
 		return jobLauncher.run(job, jobParameters);
 	}
 

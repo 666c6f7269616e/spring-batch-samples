@@ -1,10 +1,10 @@
 package com.labs.springbatchsamples.job.asyncJob;
 
 import com.labs.springbatchsamples.job.JobEnum;
-import com.labs.springbatchsamples.job.StepEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -27,14 +27,15 @@ public class JobConfiguration {
     }
 
     @Bean
-    public Job asyncJob() {
+    public Job asyncJob(    JobExecutionListener jobListener) {
         return jobBuilderFactory.get(JobEnum.ASYNC_JOB.getJobName())
                 .start(asyncStep())
+                .listener(jobListener)
                 .build();
     }
 
     private Step asyncStep() {
-        return stepBuilderFactory.get(StepEnum.ASYNC_STEP.getStepName())
+        return stepBuilderFactory.get("ASYNC_STEP")
                 .tasklet((contribution, chunkContext) -> {
                     LOG.info("Start waiting " + LocalDateTime.now().toString());
                     Thread.sleep(10000);

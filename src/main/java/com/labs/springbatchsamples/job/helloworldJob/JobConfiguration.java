@@ -1,7 +1,6 @@
 package com.labs.springbatchsamples.job.helloworldJob;
 
 import com.labs.springbatchsamples.job.JobEnum;
-import com.labs.springbatchsamples.job.StepEnum;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -31,7 +30,7 @@ public class JobConfiguration {
 	}
 
 	private Step helloStep() {
-		return stepBuilderFactory.get(StepEnum.HELLO_WORLD_STEP.getStepName())
+		return stepBuilderFactory.get("HELLO_WORLD_STEP")
 				.tasklet((contribution, chunkContext) -> {
 					System.out.println("Hello World!");
 					return RepeatStatus.FINISHED;

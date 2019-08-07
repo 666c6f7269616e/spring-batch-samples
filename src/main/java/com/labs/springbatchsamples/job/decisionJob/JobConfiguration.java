@@ -1,7 +1,6 @@
 package com.labs.springbatchsamples.job.decisionJob;
 
 import com.labs.springbatchsamples.job.JobEnum;
-import com.labs.springbatchsamples.job.StepEnum;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -49,12 +48,13 @@ public class JobConfiguration {
 		return jobBuilderFactory.get(JobEnum.DECISION_JOB.getJobName())
 				.start(decisionFlow)
 				.build()
+				.listener(jobListener)
 				.build();
 	}
 
 	@Bean
 	public Step decisionStepOdd() {
-		return stepBuilderFactory.get(StepEnum.DECISION_STEP_ODD.getStepName())
+		return stepBuilderFactory.get("DECISION_STEP_ODD")
 				.tasklet((contribution, chunkContext) -> {
 					System.out.println("Step ODD");
 					return RepeatStatus.FINISHED;
@@ -63,7 +63,7 @@ public class JobConfiguration {
 
 	@Bean
 	public Step decisionStepEven() {
-		return stepBuilderFactory.get(StepEnum.DECISION_STEP_EVEN.getStepName())
+		return stepBuilderFactory.get("DECISION_STEP_EVEN")
 				.tasklet((contribution, chunkContext) -> {
 					System.out.println("Step EVEN");
 					return RepeatStatus.FINISHED;
