@@ -1,4 +1,4 @@
-package com.labs.springbatchsamples.domain;
+package com.labs.springbatchsamples.domain.entity;
 
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +15,7 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-
+    private final Long id;
+    private final String name;
 
 }

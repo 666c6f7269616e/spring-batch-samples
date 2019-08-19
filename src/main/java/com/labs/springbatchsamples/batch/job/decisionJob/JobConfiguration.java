@@ -1,11 +1,11 @@
-package com.labs.springbatchsamples.job.decisionJob;
+package com.labs.springbatchsamples.batch.job.decisionJob;
 
-import com.labs.springbatchsamples.job.JobEnum;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
@@ -27,30 +27,37 @@ public class JobConfiguration {
 		this.stepBuilderFactory = stepBuilderFactory;
 	}
 
+	/* ------------------------------ JOB ------------------------------  */
+
+	@Bean
+	public Job decisionJob(JobExecutionListener jobListener, Flow decisionFlow) {
+		return jobBuilderFactory.get("DECISION_JOB")
+				.start(decisionFlow)
+				.build()
+				.listener(jobListener)
+				.build();
+	}
+
+	/* ------------------------------ FLOW ------------------------------  */
+
 	@Bean
 	public Flow decisionFlow(@Qualifier("decider") JobExecutionDecider decider) {
 
 		FlowBuilder<Flow> decisionFlow = new FlowBuilder<>("decisionFlow");
 
 		decisionFlow.start(decider)
-					.on("EVEN")
-					.to(decisionStepEven())
+				.on("EVEN")
+				.to(decisionStepEven())
 				.from(decider)
-					.on("ODD")
-					.to(decisionStepOdd())
+				.on("ODD")
+				.to(decisionStepOdd())
 				.end();
 
 		return decisionFlow.build();
 	}
 
-	@Bean
-	public Job decisionJob(JobExecutionListener jobListener, Flow decisionFlow) {
-		return jobBuilderFactory.get(JobEnum.DECISION_JOB.getJobName())
-				.start(decisionFlow)
-				.build()
-				.listener(jobListener)
-				.build();
-	}
+	/* ------------------------------ STEP ------------------------------  */
+
 
 	@Bean
 	public Step decisionStepOdd() {
@@ -70,15 +77,18 @@ public class JobConfiguration {
 				}).build();
 	}
 
+	/* ------------------------------ DECIDER ------------------------------  */
+
 
     @Bean("decider")
+	@StepScope
     public JobExecutionDecider decider() {
 
 		return (jobExecution, stepExecution) -> {
 
-			String jobParam = jobExecution.getJobParameters().getString("param", "");
-
-			if (jobParam.length() % 2 == 0) {
+			String param = jobExecution.getJobParameters().getString("param");
+			
+			if (param.length() % 2 == 0) {
 				return new FlowExecutionStatus("EVEN");
 			}
 			return new FlowExecutionStatus("ODD");

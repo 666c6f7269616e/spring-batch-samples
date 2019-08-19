@@ -1,6 +1,5 @@
-package com.labs.springbatchsamples.job.helloworldJob;
+package com.labs.springbatchsamples.batch.job.helloworldJob;
 
-import com.labs.springbatchsamples.job.JobEnum;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -23,7 +22,7 @@ public class JobConfiguration {
 
 	@Bean
 	public Job helloJob(JobExecutionListener jobListener) {
-		return jobBuilderFactory.get(JobEnum.HELLO_WORLD.getJobName())
+		return jobBuilderFactory.get("HELLO_WORLD")
 				.start(helloStep())
 				.listener(jobListener)
 				.build();

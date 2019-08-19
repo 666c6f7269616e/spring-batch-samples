@@ -1,6 +1,6 @@
-package com.labs.springbatchsamples.dao;
+package com.labs.springbatchsamples.domain.dao;
 
-import com.labs.springbatchsamples.domain.Customer;
+import com.labs.springbatchsamples.domain.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

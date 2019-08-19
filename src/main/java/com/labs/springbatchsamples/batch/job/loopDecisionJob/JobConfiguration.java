@@ -1,6 +1,5 @@
-package com.labs.springbatchsamples.job.loopDecisionJob;
+package com.labs.springbatchsamples.batch.job.loopDecisionJob;
 
-import com.labs.springbatchsamples.job.JobEnum;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -34,7 +33,7 @@ public class JobConfiguration {
 
     @Bean
     public Job loopDecisionJob(JobExecutionListener jobListener, @Qualifier("loopDeciderFlow") Flow decisionFlow) {
-        return jobBuilderFactory.get(JobEnum.LOOP_DECISION_JOB.getJobName())
+        return jobBuilderFactory.get("LOOP_DECISION_JOB")
                 .start(decisionFlow)
                 .build()
                 .listener(jobListener)

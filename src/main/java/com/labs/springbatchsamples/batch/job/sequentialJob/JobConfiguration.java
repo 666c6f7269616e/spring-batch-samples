@@ -1,6 +1,5 @@
-package com.labs.springbatchsamples.job.sequentialJob;
+package com.labs.springbatchsamples.batch.job.sequentialJob;
 
-import com.labs.springbatchsamples.job.JobEnum;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -23,7 +22,7 @@ public class JobConfiguration {
 
 	@Bean
 	public Job sequentialJob(JobExecutionListener listener) {
-		return this.jobBuilderFactory.get(JobEnum.SEQUENTIAL_FLOW.getJobName())
+		return this.jobBuilderFactory.get("SEQUENTIAL_FLOW")
 				.start(sequentialJob1())
 				.next(sequentialJob2())
 				.next(sequentialJob3())
