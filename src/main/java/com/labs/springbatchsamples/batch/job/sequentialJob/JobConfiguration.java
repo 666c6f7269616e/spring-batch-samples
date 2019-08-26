@@ -1,5 +1,6 @@
 package com.labs.springbatchsamples.batch.job.sequentialJob;
 
+import com.labs.springbatchsamples.batch.listener.SimpleStepListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -21,38 +22,46 @@ public class JobConfiguration {
 	}
 
 	@Bean
-	public Job sequentialJob(JobExecutionListener listener) {
+	public Job sequentialJob(JobExecutionListener listener, Step sequentialJob1, Step sequentialJob2, Step sequentialJob3) {
 		return this.jobBuilderFactory.get("SEQUENTIAL_FLOW")
-				.start(sequentialJob1())
-				.next(sequentialJob2())
-				.next(sequentialJob3())
+				.start(sequentialJob1)
+				.next(sequentialJob2)
+				.next(sequentialJob3)
 				.listener(listener)
 				.build();
 	}
 
-	private Step sequentialJob3() {
+	@Bean
+	public Step sequentialJob3(SimpleStepListener simpleStepListener) {
 		return stepBuilderFactory.get("SEQUENTIAL_STEP_3")
 				.tasklet((contribution, chunkContext) -> {
 					System.out.println("sequentialStep3");
 					return RepeatStatus.FINISHED;
-				}).build();
+				})
+				.listener(simpleStepListener)
+				.build();
 	}
 
-	private Step sequentialJob2() {
+	@Bean
+	public Step sequentialJob2(SimpleStepListener simpleStepListener) {
 		return stepBuilderFactory.get("SEQUENTIAL_STEP_2")
 				.tasklet((contribution, chunkContext) -> {
 					System.out.println("sequentialStep2");
 					return RepeatStatus.FINISHED;
-				}).build();
+				})
+				.listener(simpleStepListener)
+				.build();
 	}
 
-	private Step sequentialJob1() {
+	@Bean
+	public Step sequentialJob1(SimpleStepListener simpleStepListener) {
 		return stepBuilderFactory.get("SEQUENTIAL_STEP_1")
 				.tasklet((contribution, chunkContext) -> {
 					System.out.println("sequentialStep1");
 					return RepeatStatus.FINISHED;
-				}).build();
-
+				})
+				.listener(simpleStepListener)
+				.build();
 	}
 
 }

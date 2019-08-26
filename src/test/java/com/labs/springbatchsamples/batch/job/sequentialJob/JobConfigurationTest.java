@@ -2,6 +2,7 @@ package com.labs.springbatchsamples.batch.job.sequentialJob;
 
 import com.labs.springbatchsamples.batch.job.BatchTestConfiguration;
 import com.labs.springbatchsamples.batch.listener.SimpleJobListener;
+import com.labs.springbatchsamples.batch.listener.SimpleStepListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.ExitStatus;
@@ -14,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@Import({JobConfiguration.class, SimpleJobListener.class})
+@Import({JobConfiguration.class, SimpleJobListener.class, SimpleStepListener.class})
 @ContextConfiguration(classes = {BatchTestConfiguration.class})
 public class JobConfigurationTest {
 

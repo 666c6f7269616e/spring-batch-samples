@@ -7,7 +7,6 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
-import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.job.flow.JobExecutionDecider;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,8 +19,6 @@ public class JobConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-    private String parameter;
-
     public JobConfiguration(JobBuilderFactory jobBuilderFactory,
                             StepBuilderFactory stepBuilderFactory) {
         this.jobBuilderFactory = jobBuilderFactory;
@@ -29,81 +26,39 @@ public class JobConfiguration {
     }
 
     /* ------------------------------ JOB ------------------------------  */
-
-
     @Bean
-    public Job loopDecisionJob(JobExecutionListener jobListener, @Qualifier("loopDeciderFlow") Flow decisionFlow) {
+    public Job loopDecisionJob(Flow loopDeciderFlow, JobExecutionListener simpleJobListener) {
         return jobBuilderFactory.get("LOOP_DECISION_JOB")
-                .start(decisionFlow)
+		        .start(loopDeciderFlow)
                 .build()
-                .listener(jobListener)
+                .listener(simpleJobListener)
                 .build();
     }
 
     /* ------------------------------ FLOW ------------------------------  */
 
     @Bean("loopDeciderFlow")
-    public Flow loopDecisionFlow(@Qualifier("loopDecider") JobExecutionDecider loopDecider,
-                                 @Qualifier("removeResource") Step removeResource) {
+    public Flow loopDecisionFlow(@Qualifier("repeatDecider") JobExecutionDecider repeatDecider,
+                                 @Qualifier("peekStep") Step peekStep) {
 
         FlowBuilder<Flow> decisionFlow = new FlowBuilder<>("loopDecisionFlow");
 
-        decisionFlow.start(prepareResource())
-                .next(printResource())
-                .next(loopDecider)
-                    .on("CONTINUE")
-                    .to(removeResource())
-                    .next(printResource())
-                .from(loopDecider)
-                    .on("COMPLETED")
-                    .end();
-//                .build();
-
+        decisionFlow.start(peekStep)
+                .next(repeatDecider)
+                .on("CONTINUE")
+                .to(peekStep)
+                .from(repeatDecider)
+                .on("COMPLETED")
+                .end();
         return decisionFlow.build();
     }
 
-    /* ------------------------------ STEP ------------------------------  */
-
-    @Bean("removeResource")
-    public Step removeResource() {
-        return stepBuilderFactory.get("LOOP_DECISION_REMOVE_STEP")
-                .tasklet((contribution, chunkContext) -> {
-                    parameter = parameter.substring(1);
-                    return RepeatStatus.FINISHED;
-                }).build();
-    }
-
     @Bean
-    public Step printResource() {
+    public Step peekStep() {
         return stepBuilderFactory.get("LOOP_DECISION_PRINT_STEP")
                 .tasklet((contribution, chunkContext) -> {
-                    System.out.println(parameter);
+                    System.out.println("ok");
                     return RepeatStatus.FINISHED;
                 }).build();
     }
-
-    @Bean
-    public Step prepareResource() {
-        return stepBuilderFactory.get("LOOP_DECISION_PREPARE_STEP")
-                .tasklet((contribution, chunkContext) -> {
-                    parameter = (String) chunkContext.getStepContext().getJobParameters().getOrDefault("param", "");
-                    return RepeatStatus.FINISHED;
-                }).build();
-    }
-
-    /* ------------------------------ DECIDER ------------------------------  */
-
-    @Bean("loopDecider")
-    public JobExecutionDecider loopDecider() {
-
-        return (jobExecution, stepExecution) -> {
-
-            if (parameter.length() == 0){
-                return new FlowExecutionStatus("COMPLETED");
-            }
-
-            return new FlowExecutionStatus("CONTINUE");
-        };
-    }
-
 }
