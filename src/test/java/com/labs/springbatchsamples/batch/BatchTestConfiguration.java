@@ -1,4 +1,4 @@
-package com.labs.springbatchsamples.batch.job;
+package com.labs.springbatchsamples.batch;
 
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.test.JobLauncherTestUtils;

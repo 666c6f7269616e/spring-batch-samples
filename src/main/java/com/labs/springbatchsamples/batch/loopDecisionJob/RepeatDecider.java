@@ -1,4 +1,4 @@
-package com.labs.springbatchsamples.batch.job.loopDecisionJob;
+package com.labs.springbatchsamples.batch.loopDecisionJob;
 
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;

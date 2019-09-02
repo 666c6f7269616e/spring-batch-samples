@@ -1,7 +1,6 @@
-package com.labs.springbatchsamples.batch.job.helloworldJob;
+package com.labs.springbatchsamples.batch.listenerJob;
 
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -9,7 +8,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration("helloWorldConfiguration")
+@Configuration("listenerJobConfiguration")
 public class JobConfiguration {
 
 	private final JobBuilderFactory jobBuilderFactory;
@@ -21,18 +20,21 @@ public class JobConfiguration {
 	}
 
 	@Bean
-	public Job helloJob(JobExecutionListener jobListener) {
-		return jobBuilderFactory.get("HELLO_WORLD")
-				.start(helloStep())
-				.listener(jobListener)
+	public Job helloJob(SimpleJobListener simpleJobListener, Step helloStep) {
+		return jobBuilderFactory.get("LISTENER_JOB")
+				.start(helloStep)
+				.listener(simpleJobListener)
 				.build();
 	}
 
-	private Step helloStep() {
-		return stepBuilderFactory.get("HELLO_WORLD_STEP")
+	@Bean
+	public Step helloStep(SimpleStepListener simpleStepListener) {
+		return stepBuilderFactory.get("LISTENER_STEP")
 				.tasklet((contribution, chunkContext) -> {
-					System.out.println("Hello World!");
+					System.out.println("Running step");
 					return RepeatStatus.FINISHED;
-				}).build();
+				})
+				.listener(simpleStepListener)
+				.build();
 	}
 }

@@ -1,4 +1,4 @@
-package com.labs.springbatchsamples.batch.job.loopDecisionJob;
+package com.labs.springbatchsamples.batch.loopDecisionJob;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
@@ -27,11 +27,10 @@ public class JobConfiguration {
 
     /* ------------------------------ JOB ------------------------------  */
     @Bean
-    public Job loopDecisionJob(Flow loopDeciderFlow, JobExecutionListener simpleJobListener) {
+    public Job loopDecisionJob(Flow loopDeciderFlow) {
         return jobBuilderFactory.get("LOOP_DECISION_JOB")
 		        .start(loopDeciderFlow)
                 .build()
-                .listener(simpleJobListener)
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package com.labs.springbatchsamples.batch.job.decisionJob;
+package com.labs.springbatchsamples.batch.decisionJob;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
@@ -30,11 +30,10 @@ public class JobConfiguration {
 	/* ------------------------------ JOB ------------------------------  */
 
 	@Bean
-	public Job decisionJob(JobExecutionListener jobListener, Flow decisionFlow) {
+	public Job decisionJob(Flow decisionFlow) {
 		return jobBuilderFactory.get("DECISION_JOB")
 				.start(decisionFlow)
 				.build()
-				.listener(jobListener)
 				.build();
 	}
 

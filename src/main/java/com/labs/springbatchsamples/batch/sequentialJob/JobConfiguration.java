@@ -1,8 +1,7 @@
-package com.labs.springbatchsamples.batch.job.sequentialJob;
+package com.labs.springbatchsamples.batch.sequentialJob;
 
-import com.labs.springbatchsamples.batch.listener.SimpleStepListener;
+import com.labs.springbatchsamples.batch.listenerJob.SimpleStepListener;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -22,12 +21,11 @@ public class JobConfiguration {
 	}
 
 	@Bean
-	public Job sequentialJob(JobExecutionListener listener, Step sequentialJob1, Step sequentialJob2, Step sequentialJob3) {
+	public Job sequentialJob(Step sequentialJob1, Step sequentialJob2, Step sequentialJob3) {
 		return this.jobBuilderFactory.get("SEQUENTIAL_FLOW")
 				.start(sequentialJob1)
 				.next(sequentialJob2)
 				.next(sequentialJob3)
-				.listener(listener)
 				.build();
 	}
 

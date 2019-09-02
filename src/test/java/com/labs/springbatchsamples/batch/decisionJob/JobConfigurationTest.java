@@ -1,7 +1,7 @@
-package com.labs.springbatchsamples.batch.job.decisionJob;
+package com.labs.springbatchsamples.batch.decisionJob;
 
-import com.labs.springbatchsamples.batch.job.BatchTestConfiguration;
-import com.labs.springbatchsamples.batch.listener.SimpleJobListener;
+import com.labs.springbatchsamples.batch.BatchTestConfiguration;
+import com.labs.springbatchsamples.batch.listenerJob.SimpleJobListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.*;
