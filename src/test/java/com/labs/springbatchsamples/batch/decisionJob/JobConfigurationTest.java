@@ -21,9 +21,8 @@ import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @Import({JobConfiguration.class, SimpleJobListener.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        StepScopeTestExecutionListener.class})
 @ContextConfiguration(classes = {BatchTestConfiguration.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, StepScopeTestExecutionListener.class})
 public class JobConfigurationTest {
 
     @Autowired
