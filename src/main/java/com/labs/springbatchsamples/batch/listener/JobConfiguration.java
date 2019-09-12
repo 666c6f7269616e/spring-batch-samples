@@ -1,5 +1,6 @@
-package com.labs.springbatchsamples.batch.listenerJob;
+package com.labs.springbatchsamples.batch.listener;
 
+import com.labs.springbatchsamples.batch.AbstractJobConfigutation;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -17,14 +18,10 @@ import java.util.List;
 import java.util.Queue;
 
 @Configuration("listenerJobConfiguration")
-public class JobConfiguration {
-
-	private final JobBuilderFactory jobBuilderFactory;
-	private final StepBuilderFactory stepBuilderFactory;
+public class JobConfiguration extends AbstractJobConfigutation {
 
 	public JobConfiguration(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory) {
-		this.jobBuilderFactory = jobBuilderFactory;
-		this.stepBuilderFactory = stepBuilderFactory;
+		super(jobBuilderFactory, stepBuilderFactory);
 	}
 
 	@Bean

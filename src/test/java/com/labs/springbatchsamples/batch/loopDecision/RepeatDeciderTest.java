@@ -1,4 +1,4 @@
-package com.labs.springbatchsamples.batch.loopDecisionJob;
+package com.labs.springbatchsamples.batch.loopDecision;
 
 import org.junit.Test;
 import org.springframework.batch.core.JobExecution;

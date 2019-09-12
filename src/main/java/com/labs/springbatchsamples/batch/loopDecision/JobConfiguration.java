@@ -1,5 +1,6 @@
-package com.labs.springbatchsamples.batch.loopDecisionJob;
+package com.labs.springbatchsamples.batch.loopDecision;
 
+import com.labs.springbatchsamples.batch.AbstractJobConfigutation;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -13,15 +14,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration("loopDecisionConfiguration")
-public class JobConfiguration {
-
-    private final JobBuilderFactory jobBuilderFactory;
-    private final StepBuilderFactory stepBuilderFactory;
+public class JobConfiguration extends AbstractJobConfigutation {
 
     public JobConfiguration(JobBuilderFactory jobBuilderFactory,
                             StepBuilderFactory stepBuilderFactory) {
-        this.jobBuilderFactory = jobBuilderFactory;
-        this.stepBuilderFactory = stepBuilderFactory;
+        super(jobBuilderFactory, stepBuilderFactory);
     }
 
     /* ------------------------------ JOB ------------------------------  */

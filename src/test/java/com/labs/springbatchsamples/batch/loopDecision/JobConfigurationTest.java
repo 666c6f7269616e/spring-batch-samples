@@ -1,7 +1,6 @@
-package com.labs.springbatchsamples.batch.loopDecisionJob;
+package com.labs.springbatchsamples.batch.loopDecision;
 
 import com.labs.springbatchsamples.batch.BatchTestConfiguration;
-import com.labs.springbatchsamples.batch.listenerJob.SimpleJobListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.*;
@@ -19,7 +18,7 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@Import({SimpleJobListener.class,JobConfiguration.class})
+@Import(JobConfiguration.class)
 @ContextConfiguration(classes = {RepeatDecider.class, BatchTestConfiguration.class})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, StepScopeTestExecutionListener.class})
 public class JobConfigurationTest {

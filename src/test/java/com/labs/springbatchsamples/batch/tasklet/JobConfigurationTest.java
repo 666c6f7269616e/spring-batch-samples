@@ -1,4 +1,4 @@
-package com.labs.springbatchsamples.batch.listenerJob;
+package com.labs.springbatchsamples.batch.tasklet;
 
 import com.labs.springbatchsamples.batch.BatchTestConfiguration;
 import org.junit.Test;
@@ -13,10 +13,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@Import({JobConfiguration.class, SimpleJobListener.class})
+@Import(JobConfiguration.class)
 @ContextConfiguration(classes = {BatchTestConfiguration.class})
 public class JobConfigurationTest {
-    
+
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
 
@@ -24,10 +24,9 @@ public class JobConfigurationTest {
     public void testInjections() {
         assertThat(jobLauncherTestUtils).isNotNull();
     }
-
+    
     @Test
-    public void listenerJob() throws Exception {
+    public void helloJob() throws Exception {
         assertThat(jobLauncherTestUtils.launchJob().getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
     }
-
 }

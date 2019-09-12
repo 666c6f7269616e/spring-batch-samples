@@ -1,5 +1,6 @@
-package com.labs.springbatchsamples.batch.helloworldJob;
+package com.labs.springbatchsamples.batch.tasklet;
 
+import com.labs.springbatchsamples.batch.AbstractJobConfigutation;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -8,28 +9,25 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration("helloWorldConfiguration")
-public class JobConfiguration {
-
-	private final JobBuilderFactory jobBuilderFactory;
-	private final StepBuilderFactory stepBuilderFactory;
+@Configuration("taskletConfiguration")
+public class JobConfiguration extends AbstractJobConfigutation {
 
 	public JobConfiguration(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory) {
-		this.jobBuilderFactory = jobBuilderFactory;
-		this.stepBuilderFactory = stepBuilderFactory;
+		super(jobBuilderFactory, stepBuilderFactory);
 	}
 
 	@Bean
-	public Job helloJob() {
-		return jobBuilderFactory.get("HELLO_WORLD")
-				.start(helloStep())
+	public Job helloJob(Step taskletStep) {
+		return jobBuilderFactory.get("TASKLET")
+				.start(taskletStep)
 				.build();
 	}
 
-	private Step helloStep() {
-		return stepBuilderFactory.get("HELLO_WORLD_STEP")
+	@Bean
+	public Step taskletStep() {
+		return stepBuilderFactory.get("TASKLET_STEP")
 				.tasklet((contribution, chunkContext) -> {
-					System.out.println("Hello World!");
+					System.out.println("Hello TASKLET!");
 					return RepeatStatus.FINISHED;
 				}).build();
 	}

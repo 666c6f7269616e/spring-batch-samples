@@ -1,4 +1,4 @@
-package com.labs.springbatchsamples.batch.listenerJob;
+package com.labs.springbatchsamples.batch.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
