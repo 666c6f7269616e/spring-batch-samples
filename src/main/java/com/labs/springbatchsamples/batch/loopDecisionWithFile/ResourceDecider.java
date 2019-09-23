@@ -1,28 +1,24 @@
-package com.labs.springbatchsamples.batch.loopDecision;
+package com.labs.springbatchsamples.batch.loopDecisionWithFile;
 
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.job.flow.JobExecutionDecider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
-@JobScope
-public class RepeatDecider implements JobExecutionDecider {
-
-	private Integer iteration;
-
-	public RepeatDecider(@Value("#{jobParameters['iteration']}")Integer iteration) {
-		this.iteration = iteration;
-	}
+public class ResourceDecider implements JobExecutionDecider {
 
 	@Override
 	public FlowExecutionStatus decide(JobExecution jobExecution, StepExecution stepExecution) {
 
-		if (iteration-- > 0) {
+		List<String> files = (List<String>) jobExecution.getExecutionContext().get("resources");
+		assert files != null;
+
+		if (files.size() != 0) {
 			return new FlowExecutionStatus("CONTINUE");
 		} else {
 			jobExecution.setExitStatus(ExitStatus.COMPLETED);
