@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @Import(JobConfiguration.class)
-@ContextConfiguration(classes = {ResourceDecider.class, BatchTestConfiguration.class})
+@ContextConfiguration(classes = {BatchTestConfiguration.class})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, StepScopeTestExecutionListener.class})
 public class JobConfigurationTest {
 
