@@ -28,11 +28,12 @@ import java.util.stream.Collectors;
 @Configuration("loopDecisionConfiguration")
 public class JobConfiguration extends AbstractJobConfigutation {
     
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     public JobConfiguration(JobBuilderFactory jobBuilderFactory,
-                            StepBuilderFactory stepBuilderFactory) {
+                            StepBuilderFactory stepBuilderFactory, ApplicationContext applicationContext) {
         super(jobBuilderFactory, stepBuilderFactory);
+        this.applicationContext = applicationContext;
     }
 
     @Bean
